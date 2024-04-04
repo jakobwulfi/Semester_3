@@ -5,7 +5,10 @@
       <module fileurl="file://$PROJECT_DIR$/L01 - Tidskompleksitet/L01 - Tidskompleksitet.iml" filepath="$PROJECT_DIR$/L01 - Tidskompleksitet/L01 - Tidskompleksitet.iml" />
       <module fileurl="file://$PROJECT_DIR$/L02 - Traer/L02 - Traer.iml" filepath="$PROJECT_DIR$/L02 - Traer/L02 - Traer.iml" />
       <module fileurl="file://$PROJECT_DIR$/L04 - Hashing/L04 - Hashing.iml" filepath="$PROJECT_DIR$/L04 - Hashing/L04 - Hashing.iml" />
+      <module fileurl="file://$PROJECT_DIR$/L05 - Hashing Dictionary/L05 - Hashing Dictionary.iml" filepath="$PROJECT_DIR$/L05 - Hashing Dictionary/L05 - Hashing Dictionary.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Obligatorisk Opgave Double Hashing/Obligatorisk Opgave Double Hashing.iml" filepath="$PROJECT_DIR$/Obligatorisk Opgave Double Hashing/Obligatorisk Opgave Double Hashing.iml" />
       <module fileurl="file://$PROJECT_DIR$/Semester 3.iml" filepath="$PROJECT_DIR$/Semester 3.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Obligatorisk Opgave Double Hashing/src/src.iml" filepath="$PROJECT_DIR$/Obligatorisk Opgave Double Hashing/src/src.iml" />
     </modules>
   </component>
 </project>
