@@ -16,7 +16,7 @@ public class DictionaryDoubleHashing <K, V> implements Dictionary<K, V> {
     }
 
     @Override
-    public V get(K key) {
+    public V get(K key) { // Størrelsesorden = O(n)
         V value = null;
         int j = 0;
         int index = hashingExtended(key, j);
@@ -34,7 +34,7 @@ public class DictionaryDoubleHashing <K, V> implements Dictionary<K, V> {
     }
 
     @Override
-    public boolean isEmpty() {
+    public boolean isEmpty() { // Størrelsesorden = O(1)
         if (size == 0) {
             return true;
         }
@@ -42,7 +42,7 @@ public class DictionaryDoubleHashing <K, V> implements Dictionary<K, V> {
     }
 
     @Override
-    public V put(K key, V value) {
+    public V put(K key, V value) { // Størrelsesorden = O(n)
         if (key == null || value == null) {
             throw new IllegalArgumentException("Value or Key is null.");
         }
@@ -74,7 +74,7 @@ public class DictionaryDoubleHashing <K, V> implements Dictionary<K, V> {
     }
 
     @Override
-    public V remove(K key) {
+    public V remove(K key) { // Størrelsesorden = O(n)
         if (key == null) {
             throw new IllegalArgumentException("Key is null.");
         }
@@ -91,6 +91,8 @@ public class DictionaryDoubleHashing <K, V> implements Dictionary<K, V> {
                 removed = true;
             } else if (table[index].getKey().equals(key)) {
                 oldValue = table[index].getValue();
+                DELETED.setValue(oldValue);
+                DELETED.setKey(key);
                 table[index] = null;
                 size--;
                 removed = true;
@@ -108,13 +110,13 @@ public class DictionaryDoubleHashing <K, V> implements Dictionary<K, V> {
     }
 
     private int hash(K key) { // Bruges egentlig ikke men rar for at se hvordan hashCoden defineres
-        return key.hashCode() % size;
+        return key.hashCode() % table.length;
     }
     private int hash2(K key) {
         return 7 - (key.hashCode() % 7);
     }
     private int hashingExtended(K key, int j) {
-        return (key.hashCode() + j * hash2(key)) % size;
+        return (key.hashCode() + j * hash2(key)) % table.length;
     }
     private ArrayList<Entry<K,V>> getEntries() {
         ArrayList<Entry<K,V>> entries = new ArrayList<>();
@@ -159,6 +161,9 @@ public class DictionaryDoubleHashing <K, V> implements Dictionary<K, V> {
         }
         public void setValue(V value) {
             this.value = value;
+        }
+        public void setKey(K key) {
+            this.key = key;
         }
         public String toString(){
             return "(" +key + " , " + value + ")";
