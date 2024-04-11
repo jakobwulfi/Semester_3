@@ -21,7 +21,7 @@ public class App {
         //System.out.println(findTheGreatestVertex(graph));
         graph.printEdges();
         System.out.println();
-        graph.remove(1,3);
+        graph.remove(vertices[2]);
         graph.printEdges();
     }
     public static <V extends Comparable<V>> V findTheGreatestVertex(EdgeListGraph<V> graph) {

@@ -150,10 +150,8 @@ public class EdgeListGraph<V> implements Graph<V> {
   @Override /** Remove edge (u, v) and return true if successful */  
   public boolean remove(int u, int v) {
     boolean removed = false;
-    int indexU = u;
-    int indexV = v;
-    for (Edge e : getEdges()) { // find the edges
-      if ((e.u == u && e.v == v) || (e.v == u && e.u == v)) {
+    for (Edge e : getEdges()) { // find the edges and remove both
+      if ((e.u == u && e.v == v) || e.u == v && e.v == u) {
         edges.remove(e);
         removed = true;
       }
@@ -161,6 +159,5 @@ public class EdgeListGraph<V> implements Graph<V> {
     return removed;
   }
 
-//
 }
 
