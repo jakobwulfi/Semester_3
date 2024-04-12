@@ -18,6 +18,7 @@ public class App {
         graph.addEdge(1,3,8);
         graph.addEdge(2,4,10);
         graph.addEdge(3,4,23);
+
         System.out.println("GreatestVertex:");
         System.out.println(findTheGreatestVertex(graph));
         System.out.println("\nEdgeListGraph:");
