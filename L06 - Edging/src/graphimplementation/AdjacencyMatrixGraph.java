@@ -5,13 +5,18 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class AdjacencyEdgeListGraph<V> implements Graph<V> {
+public class AdjacencyMatrixGraph<V> implements Graph<V>{
     protected List<V> vertices = new ArrayList<>(); // Store vertices
     protected List<Edge> edges = new ArrayList<>(); // Store edges
-    protected List<List<Edge>> neighbors = new ArrayList<>();
+    protected int[][] matrix = new int[5][5];
 
     /** Construct an empty graph */
-    public AdjacencyEdgeListGraph() {
+    public AdjacencyMatrixGraph() {
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[i].length; j++) {
+                matrix[i][j] = 0;
+            }
+        }
     }
 
     @Override /** Return the number of vertices in the graph */
@@ -99,7 +104,11 @@ public class AdjacencyEdgeListGraph<V> implements Graph<V> {
     public void clear() {
         vertices.clear();
         edges.clear();
-        neighbors.clear();
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[i].length; j++) {
+                matrix[i][j] = 0;
+            }
+        }
     }
 
     @Override /** Add a vertex to the graph */
@@ -138,8 +147,8 @@ public class AdjacencyEdgeListGraph<V> implements Graph<V> {
     public boolean addEdge(int u, int v, int e) {
         boolean added = addEdge(new Edge(u, v, e))&& addEdge(new Edge(v, u, e));
         if (added) {
-            neighbors.add(u, getIncidentEdges(getVertex(u)));
-            neighbors.add(v, getIncidentEdges(getVertex(v)));
+            matrix[u][v] = 1;
+            matrix[v][u] = 1;
         }
         return added;
     }
@@ -151,7 +160,6 @@ public class AdjacencyEdgeListGraph<V> implements Graph<V> {
             remove(e.u, e.v);
         }
         int index = getIndex(v);
-        neighbors.remove(index);
         boolean removed = vertices.remove(v);
         for (Edge e : edges) {
             if (e.v > index) {
@@ -170,12 +178,30 @@ public class AdjacencyEdgeListGraph<V> implements Graph<V> {
         for (Edge e : getEdges()) { // find the edges and remove both
             if ((e.u == u && e.v == v) || e.u == v && e.v == u) {
                 edges.remove(e);
-                neighbors.get(u).remove(e);
-                neighbors.get(v).remove(e);
                 removed = true;
             }
         }
-
+        if (removed) {
+            matrix[u][v] = 0;
+            matrix[v][u] = 0;
+        }
         return removed;
+    }
+
+    public void printMatrix() { // Jeg huggede den her fra GPT
+        System.out.print("  ");
+        for (int col = 0; col < matrix[0].length; col++) {
+            System.out.print(col + " ");
+        }
+        System.out.println();
+        for (int row = 0; row < matrix.length; row++) {
+            // Print row index
+            System.out.print(row + " ");
+            // Print elements in the row
+            for (int col = 0; col < matrix[row].length; col++) {
+                System.out.print(matrix[row][col] + " ");
+            }
+            System.out.println();
+        }
     }
 }

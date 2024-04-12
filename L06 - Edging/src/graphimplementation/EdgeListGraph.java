@@ -143,7 +143,16 @@ public class EdgeListGraph<V> implements Graph<V> {
     for (Edge e : incidentEdges) {
       remove(e.u, e.v);
     }
+    int index = getIndex(v);
     boolean removed = vertices.remove(v);
+    for (Edge e : edges) {
+      if (e.v > index) {
+        e.decreaseVertex(e.v);
+      }
+      if (e.u > index) {
+        e.decreaseVertex(e.u);
+      }
+    }
     return removed;
   }
 

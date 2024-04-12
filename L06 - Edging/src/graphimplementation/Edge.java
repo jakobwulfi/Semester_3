@@ -18,6 +18,13 @@ public class Edge {
   public int element() {
     return e;
   }
+  public void decreaseVertex(int i) {
+    if (i == u) {
+      u--;
+    } else if (i == v) {
+      v--;
+    }
+  }
 
 
   public String toString(){
