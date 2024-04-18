@@ -51,16 +51,21 @@ public abstract class GraphAlgortihms {
      * Pre: grafen er ikke tom
      */
     public static <V> boolean connected(Graph<V> graph) {
-        // TODO Opgave 4
-        return false;
+        ArrayList<V> vertices = (ArrayList<V>) graph.getVertices();
+        ArrayList<V> verticesConnected = (ArrayList<V>) dfs(graph, vertices.get(0));
+        if (vertices.size() == verticesConnected.size()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
      * Returnerer om der er en vej fra v1 til v2 i graph
      */
     public static <V> boolean isPath(Graph<V> graph, V v1, V v2) {
-        // TODO Opgave 5
-        return false;
+        ArrayList<V> vertices = (ArrayList<V>) graph.getVertices();
+        return vertices.containsAll(List.of(v1, v2));
     }
 
     /**
@@ -68,7 +73,7 @@ public abstract class GraphAlgortihms {
      * Grafen er en simpel vægtet graf
      */
     public static <V> Set<Edge> mst(Graph<V> graph) {
-        // TODO Opgave 7
+
         return null;
     }
 
