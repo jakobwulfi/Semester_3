@@ -63,8 +63,8 @@ public abstract class GraphAlgortihms {
     /**
      * Returnerer om der er en vej fra v1 til v2 i graph
      */
-    public static <V> boolean isPath(Graph<V> graph, V v1, V v2) {
-        ArrayList<V> vertices = (ArrayList<V>) graph.getVertices();
+    public static <V> boolean isPath(Graph<V> graph, V v1, V v2) { // Kan gøres hurtigere ved at bruge bfs formularen og så stoppe,
+        ArrayList<V> vertices = (ArrayList<V>) dfs(graph, v1);      // når man har fundet begge knuder
         return vertices.containsAll(List.of(v1, v2));
     }
 
@@ -73,7 +73,7 @@ public abstract class GraphAlgortihms {
      * Grafen er en simpel vægtet graf
      */
     public static <V> Set<Edge> mst(Graph<V> graph) {
-
+        // Pseudokode for algoritme under lektion 6 eller 7
         return null;
     }
 
