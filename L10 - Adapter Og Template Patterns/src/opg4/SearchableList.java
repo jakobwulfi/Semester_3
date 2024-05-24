@@ -17,7 +17,7 @@ public class SearchableList<E extends Comparable<E>> extends SearchPattern<E> {
 
     @Override
     protected boolean isEmpty() {
-        return list.size() < i;
+        return list.size() - 1 < i;
     }
 
     @Override

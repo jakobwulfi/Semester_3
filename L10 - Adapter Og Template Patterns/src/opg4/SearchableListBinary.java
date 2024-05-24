@@ -29,12 +29,11 @@ public class SearchableListBinary <E extends Comparable<E>> extends SearchPatter
 
     @Override
     protected void split(E m) {
-        E k = select();
         int middle = (left + right)/2;
-        if (m.compareTo(k) > 0) {
-            right = middle -1;
-        } else {
+        if (m.compareTo(list.get(middle)) > 0) {
             left = middle + 1;
+        } else {
+            right = middle -1;
         }
     }
 }
