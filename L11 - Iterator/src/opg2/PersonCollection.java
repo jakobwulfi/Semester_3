@@ -1,5 +1,6 @@
 package opg2;
 
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -10,6 +11,9 @@ public class PersonCollection implements PersonCollectionI{
     // number of entries in the list;
     // index of the first empty slot in items
     private int size;
+
+    // ID for the current state of the collection, changes when an element is added er removed
+    private int opID = 0;
 
     /**
      * Creates an Collection with capacity 16.
@@ -38,6 +42,7 @@ public class PersonCollection implements PersonCollectionI{
 
         this.persons[this.size] = person;
         this.size++;
+        this.opID++;
     }
 
     /**
@@ -53,6 +58,7 @@ public class PersonCollection implements PersonCollectionI{
         }
         this.persons[index] = person;
         this.size++;
+        this.opID++;
 
     }
 
@@ -71,6 +77,7 @@ public class PersonCollection implements PersonCollectionI{
         }
         this.persons[this.size - 1] = null;
         this.size--;
+        this.opID++;
         return person;
     }
 
@@ -123,6 +130,7 @@ public class PersonCollection implements PersonCollectionI{
         for (int i = 0; i < this.size; i++) {
             this.persons[i] = null;
         }
+        opID++;
         this.size = 0;
     }
 
@@ -148,7 +156,7 @@ public class PersonCollection implements PersonCollectionI{
 
     private class PersonIterator implements Iterator<Person> {
         private int currentIndex = 0;
-
+        private int currentOpID = opID;
         @Override
         public boolean hasNext() {
             return currentIndex < size;
@@ -156,7 +164,13 @@ public class PersonCollection implements PersonCollectionI{
 
         @Override
         public Person next() {
-            return persons[currentIndex++];
+            if (!hasNext()) {
+                throw new NoSuchElementException("No next element.");
+            } else if (currentOpID != opID) {
+                throw new ConcurrentModificationException("opID not the same.");
+            } else {
+                return persons[currentIndex++];
+            }
         }
 
         @Override

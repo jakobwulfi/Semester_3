@@ -1,12 +1,16 @@
 package opg2;
 
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public class PersonCollectionLink implements PersonCollectionI{
     // start is a refrerence to a sentinel in the linked list of persons
     private Node start;
     // number of entries in the list;
     private int size;
+    // ID for the current state of the collection, changes when an element is added er removed
+    private int opID = 0;
 
     /**
      * Creates an Collection with capacity 16.
@@ -28,6 +32,7 @@ public class PersonCollectionLink implements PersonCollectionI{
        newNode.person = person;
        temp.next = newNode;
        this.size++;
+       this.opID++;
     }
 
     /**
@@ -47,6 +52,7 @@ public class PersonCollectionLink implements PersonCollectionI{
         newNode.next = temp.next;
         temp.next = newNode;
         this.size++;
+        this.opID++;
     }
 
     /**
@@ -65,6 +71,7 @@ public class PersonCollectionLink implements PersonCollectionI{
         Person person = temp.next.person;
         temp.next = temp.next.next;
         this.size--;
+        this.opID++;
         return person;
     }
 
@@ -153,6 +160,7 @@ public class PersonCollectionLink implements PersonCollectionI{
     private class PCLIterator implements Iterator<Person> {
         private Node currentNode = start;
         private Node previousNode;
+        private int currentOpID = opID;
 
         @Override
         public boolean hasNext() {
@@ -161,6 +169,11 @@ public class PersonCollectionLink implements PersonCollectionI{
 
         @Override
         public Person next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException("No next element.");
+            } else if (currentOpID != opID) {
+                throw new ConcurrentModificationException("opID not the same.");
+            }
             previousNode = currentNode;
             currentNode = currentNode.next;
             return previousNode.person;

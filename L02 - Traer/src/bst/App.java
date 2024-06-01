@@ -17,5 +17,11 @@ public class App {
         System.out.println();
         System.out.println("Postorder");
         tree.postorder();
+        System.out.println();
+        System.out.println("Height:" + tree.height());
+        System.out.println();
+        System.out.println("Sum: " + tree.sum());
+        System.out.println();
+        System.out.println("Max: " + tree.findMax() + ", min: " + tree.findMin());
     }
 }

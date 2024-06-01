@@ -1,5 +1,8 @@
 package bst;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class BST<E> implements Tree<E> {
     protected TreeNode<E> root;
     protected int size = 0;
@@ -27,6 +30,68 @@ public class BST<E> implements Tree<E> {
         this.c = (e1, e2) -> ((Comparable<E>) e1).compareTo(e2);
         for (int i = 0; i < objects.length; i++)
             insert(objects[i]);
+    }
+
+    //opgave 2
+    public int removeMin() {
+        if (root == null) {
+            throw new IllegalArgumentException("The tree is empty");
+        }
+        TreeNode current = root;
+        TreeNode parent = null;
+        if (root.left == null) {
+            root.right = root;
+        }
+        while (current.right != null) {
+            parent = current;
+            current = current.right;
+        }
+        if (current.left != null) {
+            parent.right = current.left;
+            return (int) current.element;
+        } else {
+            parent.right = null;
+            return (int) current.element;
+        }
+    }
+
+    public ArrayList<Integer> greaterThan(E element) {
+        List<Integer> list = new ArrayList<>();
+        if (root != null) {
+            greaterThan(root, list, element);
+        }
+        return (ArrayList<Integer>) list;
+    }
+    private void greaterThan(TreeNode<E> node, List<Integer> list, E element) {
+        if (node != null) {
+            greaterThan(node.left, list, element);
+            if ((int) node.element > (int) element) {
+                list.add((int) node.element);
+            }
+            greaterThan(node.right, list, element);
+        }
+    }
+
+    public int removeMax() {
+        if (root == null) {
+            throw new IllegalArgumentException("The tree is empty");
+        }
+        TreeNode current = root;
+        TreeNode parent = null;
+        if (root.right == null) {
+            root.left = root;
+        }
+        while (current.left != null) {
+            parent = current;
+            current = current.left;
+        }
+        if (current.right != null) {
+            parent.left = current.right;
+            return (int) current.element;
+        } else {
+            parent.left = null;
+            return (int) current.element;
+        }
     }
 
     @Override

@@ -1,5 +1,10 @@
 package bst;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.Stack;
+import java.util.function.Consumer;
+
 public class BST<E> implements Tree<E> {
     protected TreeNode<E> root;
     protected int size = 0;
@@ -10,7 +15,6 @@ public class BST<E> implements Tree<E> {
      */
     public BST() {
         this.c = (e1, e2) -> ((Comparable<E>) e1).compareTo(e2);
-
     }
 
     /**
@@ -58,7 +62,7 @@ public class BST<E> implements Tree<E> {
             // Locate the parent node
             TreeNode<E> parent = null;
             TreeNode<E> current = root;
-            while (current != null && inserted)
+            while (current != null && inserted) {
                 if (c.compare(e, current.element) < 0) {
                     parent = current;
                     current = current.left;
@@ -67,14 +71,15 @@ public class BST<E> implements Tree<E> {
                     current = current.right;
                 } else
                     inserted = false; // Duplicate node not inserted
-
+            }
             // Create the new node and attach it to the parent node
-            if (c.compare(e, parent.element) < 0)
-                parent.left = createNewNode(e);
-            else
-                parent.right = createNewNode(e);
+            if (inserted) {
+                if (c.compare(e, parent.element) < 0)
+                    parent.left = createNewNode(e);
+                else
+                    parent.right = createNewNode(e);
+            }
         }
-
         size++;
         return inserted; // Element inserted successfully
     }
@@ -86,31 +91,23 @@ public class BST<E> implements Tree<E> {
     @Override
     /** Inorder traversal from the root */
     public void inorder() {
-        if (root != null) {
-            inorder(root);
-        }
-    }
-    private void inorder(TreeNode<E> node) {
-        if (node != null) {
-            inorder(node.left);
-            System.out.println(node.element);
-            inorder(node.right);
+        BSTIterator inorderIterator = new BSTIterator(root, TraversalOrder.INORDER);
+        while (inorderIterator.hasNext()) {
+            System.out.println(inorderIterator.next());
         }
     }
 
+    private void inorder(TreeNode<E> node) {
+        //TODO
+        // left as an exercise
+    }
 
     @Override
     /** Postorder traversal from the root */
     public void postorder() {
-        if (root != null) {
-            postorder(root);
-        }
-    }
-    private void postorder(TreeNode<E> node) {
-        if (node != null) {
-            postorder(node.left);
-            postorder(node.right);
-            System.out.println(node.element);
+        BSTIterator postOrderIterator = new BSTIterator(root, TraversalOrder.POSTORDER);
+        while (postOrderIterator.hasNext()) {
+            System.out.println(postOrderIterator.next());
         }
     }
 
@@ -118,17 +115,12 @@ public class BST<E> implements Tree<E> {
     @Override
     /** Preorder traversal from the root */
     public void preorder() {
-        if (root != null) {
-            preorder(root);
+        BSTIterator preOrderIterator = new BSTIterator(root, TraversalOrder.PREORDER);
+        while (preOrderIterator.hasNext()) {
+            System.out.println(preOrderIterator.next());
         }
     }
-    private void preorder(TreeNode<E> node) {
-        if (node != null) {
-            System.out.println(node.element);
-            preorder(node.left);
-            preorder(node.right);
-        }
-    }
+
 
     /**
      * This inner class is static, because it does not access
@@ -217,75 +209,99 @@ public class BST<E> implements Tree<E> {
         return found; // Element deleted successfully
     }
 
-    public boolean isLeaf(TreeNode node) {
-        if (node.right == null && node.left == null) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-    public boolean isInternal(TreeNode node) {
-        if (node.right != null || node.left != null) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public int height() {
-        int heightRight = height(root.right);
-        int heightLeft = height(root.left);
-        return Math.max(heightRight + 1, heightLeft + 1);
-
-    }
-    private int height(TreeNode node) {
-        if (node == null) {
-            return -1; // Return -1 at at tage "højde" for blade
-        }
-        int leftHeight = height(node.left);
-        int rightHeight = height(node.right);
-        return Math.max(leftHeight, rightHeight) + 1;
-    }
-
-    public int sum() {
-        int sumRight = sum(root.right);
-        int sumLeft = sum(root.left);
-        return sumRight + sumLeft + (int) root.element;
-    }
-    private int sum(TreeNode node) {
-        if (node == null) {
-            return 0;
-        }
-        int sumRight = sum(node.right);
-        int sumLeft = sum(node.left);
-        return sumRight + sumLeft + (int) node.element;
-    }
-
-    public int findMax() {
-        int maxRight = findMax(root.right);
-        return Math.max(maxRight, (int) root.element);
-    }
-    private int findMax(TreeNode node) {
-        if (node == null) {
-            return 0;
-        }
-        int maxRight = findMax(node.right);
-        return Math.max(maxRight, (int) node.element);
-    }
-    public int findMin() {
-        if (root == null) {
-            throw new IllegalArgumentException("The tree is empty");
-        }
-        TreeNode current = root;
-        while (current.left != null) {
-            current = current.left;
-        }
-        return (int) current.element;
-    }
-
 //
+
+    public Iterator<E> iterator(TraversalOrder order) {
+        return new BSTIterator(root, order);
+    }
+
+    public enum TraversalOrder {
+        PREORDER,
+        INORDER,
+        POSTORDER
+    }
     //-------------------------------------------------------------------
+    private class BSTIterator implements Iterator<E> {
+        private Stack<TreeNode<E>> stack;
+        private Stack<TreeNode<E>> stack2;
+        private TreeNode<E> current;
+        private BST.TraversalOrder order;
 
+        public BSTIterator(TreeNode<E> root, BST.TraversalOrder order) {
+            this.order = order;
+            this.stack = new Stack<>();
+            this.current = root;
+            initializeStack(root);
+        }
 
+        private void initializeStack(TreeNode<E> node) {
+            if (order == BST.TraversalOrder.PREORDER) {
+                if (node != null) stack.push(node);
+            } else if (order == BST.TraversalOrder.INORDER) {
+                pushLeft(node);
+            } else if (order == BST.TraversalOrder.POSTORDER) {
+                stack2 = new Stack<>();
+                if (node != null) {
+                    stack.push(node);
+                    while (!stack.isEmpty()) {
+                        TreeNode<E> nodeCurrent = stack.pop();
+                        stack2.push(nodeCurrent);
+                        if (nodeCurrent.left != null) {
+                            stack.push(nodeCurrent.left);
+                        }
+                        if (nodeCurrent.right != null) {
+                            stack.push(nodeCurrent.right);
+                        }
+                    }
+                }
+            }
+        }
 
+        private void pushLeft(TreeNode<E> node) {
+            while (node != null) {
+                stack.push(node);
+                node = node.left;
+            }
+        }
+        @Override
+        public boolean hasNext() {
+            if (order.equals(TraversalOrder.INORDER) || order.equals(TraversalOrder.PREORDER)) {
+                return !stack.isEmpty();
+            } else {
+                return !stack2.isEmpty();
+            }
+        }
+        @Override
+        public E next() {
+            if (!hasNext()) throw new NoSuchElementException();
+
+            if (order.equals(TraversalOrder.PREORDER)) {
+                TreeNode<E> node = stack.pop();
+                if (node.right != null) {
+                    stack.push(node.right);
+                }
+                if (node.left != null) {
+                    stack.push(node.left);
+                }
+                return node.element;
+            } else if (order.equals(TraversalOrder.INORDER)) {
+                TreeNode<E> node = stack.pop();
+                if (node.right != null) {
+                    pushLeft(node.right);
+                }
+                return node.element;
+            } else if (order.equals(TraversalOrder.POSTORDER)) {
+                return stack2.pop().element;
+            }
+            return null;
+        }
+        @Override
+        public void remove() {
+            Iterator.super.remove();
+        }
+        /*@Override
+        public void forEachRemaining(Consumer<? super E> action) {
+            Iterator.super.forEachRemaining(action);
+        }*/
+    }
 }
